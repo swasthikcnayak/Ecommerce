@@ -1,6 +1,5 @@
 package com.ecommerce.authorization.services;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,8 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
