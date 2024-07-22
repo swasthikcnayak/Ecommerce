@@ -36,7 +36,7 @@ public class JwtService {
 
     public JwtService(Environment environment) {
         this.environment = environment;
-        this.jwtParser = initJwt();
+        this.initJwt();
     }
 
     public Map<String, Object> extractJwt(String token, List<String> claimNames) {

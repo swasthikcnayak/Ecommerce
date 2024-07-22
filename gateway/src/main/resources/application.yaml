@@ -4,7 +4,7 @@ spring:
       routes:
         ## service1
         - id: auth
-          uri: lb://auth-service
+          uri: lb://authservice
           predicates:
             - Path=/auth/**
           filters:
