@@ -1,11 +1,11 @@
 package com.ecommerce.authorization.dto.response;
 
-import com.ecommerce.authorization.dto.Role;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class UserRequest {
+@AllArgsConstructor
+public class AuthResource{
     String userId;
-    Role role;
+    String token;
 }
