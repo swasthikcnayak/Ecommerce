@@ -1,5 +1,6 @@
 package com.ecommerce.authorization.utils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,9 +23,9 @@ public class ObjectUtils {
     public TokenResource getTokenResource(Map<String, Object> claims) {
         return TokenResource.builder()
                 .email((String) claims.get(Constants.EMAIL_TOKEN))
-                .expiry((Long) claims.get(Constants.EXPIRY_TOKEN))
+                .expiry(new Date(((Long)claims.get(Constants.EXPIRY_TOKEN))*1000))
                 .id((String) claims.get(Constants.SUBJECT_TOKEN))
-                .issuedAt((Long) claims.get(Constants.ISSUED_AT_TOKEN))
+                .issuedAt(new Date(((Long)claims.get(Constants.ISSUED_AT_TOKEN))*1000))
                 .build();
     }
 

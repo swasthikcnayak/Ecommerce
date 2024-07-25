@@ -6,12 +6,10 @@ spring:
           uri: lb://authservice
           predicates:
             - Path=/auth/**
-          filters:
-            - StripPrefix=1
 
         - id: users
           uri: lb://userservice
           predicates:
             - Path=/users/**
           filters:
-            - StripPrefix=1
+            - TokenValidatorFilter

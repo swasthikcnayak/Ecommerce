@@ -18,6 +18,7 @@ import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.ws.rs.BadRequestException;
 
 @Service
 public class SecretService {
@@ -47,12 +48,14 @@ public class SecretService {
     public String generateToken(
             String userId,
             Map<String, Object> claims) {
+                Date current = new Date();
+                Date expiry = new Date(current.getTime() + this.expiration);
         return Jwts
                 .builder()
                 .claims(claims)
                 .subject(userId)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + this.expiration))
+                .issuedAt(current)
+                .expiration(expiry)
                 .signWith(this.signInKey)
                 .compact();
     }
@@ -63,9 +66,8 @@ public class SecretService {
             Object payload = jwtObject.getPayload();
             return payload;
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            throw new BadRequestException("JWT authentication failure");
         }
-        return null;
     }
 
     public String getPasswordHash(String password) {

@@ -1,7 +1,9 @@
 package com.ecommerce.authorization.services;
 
+import java.util.Date;
 import java.util.Map;
 
+import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import com.ecommerce.authorization.repository.UserRepository;
 import com.ecommerce.authorization.utils.ObjectUtils;
 
 import io.jsonwebtoken.Claims;
+import jakarta.ws.rs.BadRequestException;
 
 @Service
 public class AuthService {
@@ -38,30 +41,31 @@ public class AuthService {
             .isVerified(false)
             .lastLoggedIn(null)
             .build();
-        user = this.userRepository.save(user);
+        try{ 
+            user = this.userRepository.save(user);
+        }catch(Exception e){
+            throw new BadRequestException("Account already exists");
+        }
         return new UserRegistrationResponse(user.getId().toString(), user.getEmail());
     }
 
-    public AuthResource login(UserLoginRequest userLoginRequest){
+    public AuthResource login(UserLoginRequest userLoginRequest) throws AuthenticationException{
         AuthInfo auth = userRepository.findOneByEmailAndIsVerified(userLoginRequest.getEmail(), true);
         if(auth == null){
-            // throw authentication exception
-            return null;
+            throw new AuthenticationException("Wrong email/password or email not verified");
         }
         boolean isValid = secretService.comparePassword(userLoginRequest.getPassword(), auth.getPassword());
         if(isValid == false){
-            // throw authentication exception
-            return null;
+            throw new AuthenticationException("Wrong email/password");
         }
         Map<String, Object> claims = objectUtils.getClaims((UserInfo)auth);
         String token = secretService.generateToken(auth.getId().toString(),claims);
         return new AuthResource(auth.getEmail(), token);
     }
 
-    public TokenResource validateToken(String token) {
+    public TokenResource validateToken(String token) throws AuthenticationException {
         if (token == null || token.isEmpty()) {
-            // throw authentication exception
-            return null;
+            throw new BadRequestException("Token cannot be empty");
         }
         if (token.startsWith("Bearer")) {
             token = token.substring(6).trim().strip();
@@ -69,9 +73,12 @@ public class AuthService {
         Object payload = secretService.extractJwt(token);
         if (payload instanceof Claims) {
             TokenResource tokenResource = objectUtils.getTokenResource(objectUtils.getMapFromClaims((Claims)payload));
+            if(tokenResource.getExpiry().before(new Date())){
+                throw new AuthenticationException("Token expired");
+            }
             return tokenResource;
         }
-        return null;
+        throw new BadRequestException("Invalid token");
     }
 
 }

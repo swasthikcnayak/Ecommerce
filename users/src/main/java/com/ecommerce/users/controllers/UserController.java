@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("users/v1/")
 public class UserController {
     
     @Autowired

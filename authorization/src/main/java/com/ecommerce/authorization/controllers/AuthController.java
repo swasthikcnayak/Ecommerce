@@ -26,20 +26,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/v1/")
+@RequestMapping("/auth/v1/")
 public class AuthController {
 
     @Autowired
     AuthService authService;
     
     @PostMapping(name="validateToken", value = "/validate", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<TokenResource> validateToken(@RequestHeader(Constants.AUTHORIZATION_HEADER) String authorization) {
+    public ResponseEntity<TokenResource> validateToken(@RequestHeader(Constants.AUTHORIZATION_HEADER) String authorization) throws org.apache.http.auth.AuthenticationException {
         TokenResource userInfo= authService.validateToken(authorization);
         return new ResponseEntity<TokenResource>(userInfo, HttpStatus.OK);
     }
 
     @PostMapping(name="login", value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<AuthResource> login(@Valid @RequestBody UserLoginRequest loginRequest) {
+    public ResponseEntity<AuthResource> login(@Valid @RequestBody UserLoginRequest loginRequest) throws org.apache.http.auth.AuthenticationException {
         AuthResource resource = authService.login(loginRequest);
         return new ResponseEntity<AuthResource>(resource, HttpStatus.OK);
     }
