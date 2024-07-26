@@ -1,5 +1,7 @@
 package com.ecommerce.gateway.dto;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +10,6 @@ import lombok.Setter;
 public class TokenResource {
     String id;
     String email;
-    Long expiry;
-    Long issuedAt;
+    Date expiry;
+    Date issuedAt;
 }

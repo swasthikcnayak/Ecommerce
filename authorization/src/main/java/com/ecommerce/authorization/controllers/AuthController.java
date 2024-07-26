@@ -15,13 +15,12 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.apache.http.auth.AuthenticationException;
 
 
 
@@ -33,13 +32,13 @@ public class AuthController {
     AuthService authService;
     
     @PostMapping(name="validateToken", value = "/validate", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<TokenResource> validateToken(@RequestHeader(Constants.AUTHORIZATION_HEADER) String authorization) throws org.apache.http.auth.AuthenticationException {
+    public ResponseEntity<TokenResource> validateToken(@RequestHeader(Constants.AUTHORIZATION_HEADER) String authorization) {
         TokenResource userInfo= authService.validateToken(authorization);
         return new ResponseEntity<TokenResource>(userInfo, HttpStatus.OK);
     }
 
     @PostMapping(name="login", value = "/login", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<AuthResource> login(@Valid @RequestBody UserLoginRequest loginRequest) throws org.apache.http.auth.AuthenticationException {
+    public ResponseEntity<AuthResource> login(@Valid @RequestBody UserLoginRequest loginRequest) throws AuthenticationException {
         AuthResource resource = authService.login(loginRequest);
         return new ResponseEntity<AuthResource>(resource, HttpStatus.OK);
     }

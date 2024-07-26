@@ -14,11 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.authorization.utils.Constants;
+import com.ecommerce.authorization.utils.errors.BadRequestException;
+
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import jakarta.ws.rs.BadRequestException;
 
 @Service
 public class SecretService {

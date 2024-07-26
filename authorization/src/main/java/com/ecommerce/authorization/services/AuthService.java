@@ -3,7 +3,6 @@ package com.ecommerce.authorization.services;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.http.auth.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +16,10 @@ import com.ecommerce.authorization.dto.response.TokenResource;
 import com.ecommerce.authorization.dto.response.UserRegistrationResponse;
 import com.ecommerce.authorization.repository.UserRepository;
 import com.ecommerce.authorization.utils.ObjectUtils;
+import com.ecommerce.authorization.utils.errors.AuthenticationException;
+import com.ecommerce.authorization.utils.errors.BadRequestException;
 
 import io.jsonwebtoken.Claims;
-import jakarta.ws.rs.BadRequestException;
 
 @Service
 public class AuthService {
@@ -33,7 +33,7 @@ public class AuthService {
     @Autowired
     ObjectUtils objectUtils;
 
-    public UserRegistrationResponse register(UserRegistrationRequest registrationRequest){
+    public UserRegistrationResponse register(UserRegistrationRequest registrationRequest) throws BadRequestException {
         String passwordHash = this.secretService.getPasswordHash(registrationRequest.getPassword());
         User user = User.builder()
             .email(registrationRequest.getEmail().toLowerCase())
@@ -63,7 +63,7 @@ public class AuthService {
         return new AuthResource(auth.getEmail(), token);
     }
 
-    public TokenResource validateToken(String token) throws AuthenticationException {
+    public TokenResource validateToken(String token) throws BadRequestException, AuthenticationException {
         if (token == null || token.isEmpty()) {
             throw new BadRequestException("Token cannot be empty");
         }

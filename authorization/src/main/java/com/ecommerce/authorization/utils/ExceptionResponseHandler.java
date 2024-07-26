@@ -7,12 +7,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import org.apache.http.auth.AuthenticationException;
-
 import com.ecommerce.authorization.dto.response.ErrorResponse;
+import com.ecommerce.authorization.utils.errors.AuthenticationException;
+import com.ecommerce.authorization.utils.errors.BadRequestException;
 
 import jakarta.validation.ValidationException;
-import jakarta.ws.rs.BadRequestException;
 
 @ControllerAdvice
 public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
