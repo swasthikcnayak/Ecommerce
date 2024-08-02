@@ -24,8 +24,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping(name = "createUser", value="/", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(name = "createUser", value="/register", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public String registerUser(@RequestBody UserRegistrationDto UserRegistrationDto) {
+        return "complete";
+    }
+
+    @PostMapping(name = "login", value="/login", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public String loginUser(@RequestBody UserRegistrationDto UserRegistrationDto) {
         return "complete";
     }
 

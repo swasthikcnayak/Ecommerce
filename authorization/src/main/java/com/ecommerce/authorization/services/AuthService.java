@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ecommerce.authorization.dao.User;
 import com.ecommerce.authorization.dao.projections.AuthInfo;
-import com.ecommerce.authorization.dao.projections.UserInfo;
+import com.ecommerce.authorization.dto.JWTResource;
 import com.ecommerce.authorization.dto.request.UserLoginRequest;
 import com.ecommerce.authorization.dto.request.UserRegistrationRequest;
 import com.ecommerce.authorization.dto.response.AuthResource;
@@ -32,6 +32,9 @@ public class AuthService {
 
     @Autowired
     ObjectUtils objectUtils;
+
+    @Autowired
+    TokenService tokenService;
 
     public UserRegistrationResponse register(UserRegistrationRequest registrationRequest) throws BadRequestException {
         String passwordHash = this.secretService.getPasswordHash(registrationRequest.getPassword());
@@ -58,23 +61,22 @@ public class AuthService {
         if(isValid == false){
             throw new AuthenticationException("Wrong email/password");
         }
-        Map<String, Object> claims = objectUtils.getClaims((UserInfo)auth);
-        String token = secretService.generateToken(auth.getId().toString(),claims);
-        return new AuthResource(auth.getEmail(), token);
+        Map<String, Object> claims = objectUtils.getClaims(auth);
+        JWTResource jwtResource = secretService.generateToken(auth.getId().toString(),claims);
+        tokenService.saveToken(jwtResource, auth);
+        return new AuthResource(auth.getEmail(), jwtResource.getToken());
     }
 
     public TokenResource validateToken(String token) throws BadRequestException, AuthenticationException {
-        if (token == null || token.isEmpty()) {
-            throw new BadRequestException("Token cannot be empty");
-        }
-        if (token.startsWith("Bearer")) {
-            token = token.substring(6).trim().strip();
+        token = objectUtils.preprocessToken(token);
+        if(!tokenService.verify(token)){
+            throw new AuthenticationException("Invalid token");
         }
         Object payload = secretService.extractJwt(token);
         if (payload instanceof Claims) {
             TokenResource tokenResource = objectUtils.getTokenResource(objectUtils.getMapFromClaims((Claims)payload));
             if(tokenResource.getExpiry().before(new Date())){
-                throw new AuthenticationException("Token expired");
+                throw new AuthenticationException("Expired token");
             }
             return tokenResource;
         }

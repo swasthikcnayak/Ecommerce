@@ -1,5 +1,9 @@
 package com.ecommerce.authorization.dao.projections;
 
-public interface AuthInfo extends UserInfo {
+import java.util.UUID;
+
+public interface AuthInfo {
+    UUID getId();
+    String getEmail();
     String getPassword();
 }

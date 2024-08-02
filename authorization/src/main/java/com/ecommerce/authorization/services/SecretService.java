@@ -7,12 +7,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.crypto.SecretKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.authorization.dto.JWTResource;
 import com.ecommerce.authorization.utils.Constants;
 import com.ecommerce.authorization.utils.errors.BadRequestException;
 
@@ -23,8 +22,6 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class SecretService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SecretService.class);
 
     private Environment environment;
 
@@ -46,19 +43,19 @@ public class SecretService {
         return this.extractToken(this.jwtParser, token);
     }
 
-    public String generateToken(
+    public JWTResource generateToken(
             String userId,
             Map<String, Object> claims) {
                 Date current = new Date();
                 Date expiry = new Date(current.getTime() + this.expiration);
-        return Jwts
+        return new JWTResource(Jwts
                 .builder()
                 .claims(claims)
                 .subject(userId)
                 .issuedAt(current)
                 .expiration(expiry)
                 .signWith(this.signInKey)
-                .compact();
+                .compact(), expiry);
     }
 
     private Object extractToken(JwtParser parser, String jwtToken) {

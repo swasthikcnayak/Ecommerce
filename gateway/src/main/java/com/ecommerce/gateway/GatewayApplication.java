@@ -18,5 +18,4 @@ public class GatewayApplication {
     WebClient.Builder getWebClientBuilder() {
         return WebClient.builder();
     }
-
 }

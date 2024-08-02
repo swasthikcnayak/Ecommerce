@@ -7,14 +7,16 @@ import java.util.Map.Entry;
 
 import org.springframework.stereotype.Component;
 
-import com.ecommerce.authorization.dao.projections.UserInfo;
+import com.ecommerce.authorization.dao.projections.AuthInfo;
 import com.ecommerce.authorization.dto.response.TokenResource;
+import com.ecommerce.authorization.utils.errors.BadRequestException;
+
 import io.jsonwebtoken.Claims;
 
 @Component
 public class ObjectUtils {
 
-    public Map<String, Object> getClaims(UserInfo userInfo) {
+    public Map<String, Object> getClaims(AuthInfo userInfo) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(Constants.EMAIL_TOKEN, userInfo.getEmail());
         return claims;
@@ -37,4 +39,14 @@ public class ObjectUtils {
         return map;
     }
 
+
+    public String preprocessToken(String token){
+        if (token == null || token.isEmpty()) {
+            throw new BadRequestException("Token cannot be empty");
+        }
+        if (token.startsWith("Bearer")) {
+            token = token.substring(6).trim().strip();
+        }
+        return token;
+    }
 }
