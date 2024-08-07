@@ -13,12 +13,10 @@ import com.ecommerce.authorization.dto.request.UserLoginRequest;
 import com.ecommerce.authorization.dto.request.UserRegistrationRequest;
 import com.ecommerce.authorization.dto.response.AuthResource;
 import com.ecommerce.authorization.dto.response.TokenResource;
-import com.ecommerce.authorization.dto.response.UserRegistrationResponse;
 import com.ecommerce.authorization.repository.UserRepository;
 import com.ecommerce.authorization.utils.ObjectUtils;
 import com.ecommerce.authorization.utils.errors.AuthenticationException;
 import com.ecommerce.authorization.utils.errors.BadRequestException;
-
 import io.jsonwebtoken.Claims;
 
 @Service
@@ -36,7 +34,7 @@ public class AuthService {
     @Autowired
     TokenService tokenService;
 
-    public UserRegistrationResponse register(UserRegistrationRequest registrationRequest) throws BadRequestException {
+    public void register(UserRegistrationRequest registrationRequest) throws BadRequestException {
         String passwordHash = this.secretService.getPasswordHash(registrationRequest.getPassword());
         User user = User.builder()
             .email(registrationRequest.getEmail().toLowerCase())
@@ -49,7 +47,6 @@ public class AuthService {
         }catch(Exception e){
             throw new BadRequestException("Account already exists");
         }
-        return new UserRegistrationResponse(user.getId().toString(), user.getEmail());
     }
 
     public AuthResource login(UserLoginRequest userLoginRequest) throws AuthenticationException{

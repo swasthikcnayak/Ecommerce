@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.ecommerce.authorization.dto.response.ErrorResponse;
 import com.ecommerce.authorization.utils.errors.AuthenticationException;
 import com.ecommerce.authorization.utils.errors.BadRequestException;
+import com.ecommerce.authorization.utils.errors.InternalException;
 
 import jakarta.validation.ValidationException;
 
@@ -34,6 +35,13 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidationException(
       ValidationException ex, WebRequest request) {
         ErrorResponse error = ErrorResponse.builder().statusCode(HttpStatus.BAD_REQUEST.value()).message(ErrorMessages.ERROR_VALIDATION).extraMessage(ex.getMessage()).build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = InternalException.class)
+    public ResponseEntity<ErrorResponse> handleInternalException(
+      InternalException ex, WebRequest request) {
+        ErrorResponse error = ErrorResponse.builder().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(ErrorMessages.ERROR_VALIDATION).extraMessage(ex.getMessage()).build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

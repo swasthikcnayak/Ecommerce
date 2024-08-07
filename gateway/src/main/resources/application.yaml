@@ -11,5 +11,5 @@ spring:
           uri: lb://userservice
           predicates:
             - Path=/users/**
-          filters:
-            - TokenValidatorFilter
+          # filters:
+          #   - TokenValidatorFilter

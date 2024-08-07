@@ -44,8 +44,8 @@ public class AuthController {
     }
     
     @PostMapping(name="register", value="/register", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<UserRegistrationResponse> registerUser(@Valid @RequestBody UserRegistrationRequest userRegistrationDto) {
-        UserRegistrationResponse response = authService.register(userRegistrationDto);
-        return new ResponseEntity<UserRegistrationResponse>(response, HttpStatus.CREATED);
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegistrationRequest userRegistrationDto) {
+        authService.register(userRegistrationDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

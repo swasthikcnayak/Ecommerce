@@ -62,8 +62,7 @@ public class TokenValidatorFilter extends AbstractGatewayFilterFactory<TokenVali
                     .bodyToMono(TokenResource.class)
                     .flatMap(authResponse -> {
                         ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
-                                .header("X-emailId", authResponse.getEmail())
-                                .header("X-clientId", authResponse.getId())
+                                .header(Constants.HEADER_CLIENT_ID, authResponse.getId())
                                 .build();
                         return chain.filter(exchange.mutate().request(modifiedRequest).build());
                     })

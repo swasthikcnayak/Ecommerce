@@ -2,10 +2,13 @@ package com.ecommerce.users.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ecommerce.users.dto.UserRegistrationDto;
+import com.ecommerce.users.dto.UserRegistrationRequest;
 import com.ecommerce.users.services.UserService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,12 +28,12 @@ public class UserController {
     UserService userService;
 
     @PostMapping(name = "createUser", value="/register", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public String registerUser(@RequestBody UserRegistrationDto UserRegistrationDto) {
-        return "complete";
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody  UserRegistrationRequest userRegistrationDto)  {
+        return userService.registerUser(userRegistrationDto);
     }
 
     @PostMapping(name = "login", value="/login", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public String loginUser(@RequestBody UserRegistrationDto UserRegistrationDto) {
+    public String loginUser(@RequestBody UserRegistrationRequest UserRegistrationDto) {
         return "complete";
     }
 
